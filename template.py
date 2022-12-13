@@ -1,3 +1,11 @@
+import numpy as np
+import matplotlib.pyplot as plt
+import cv2
+import os
+from scipy.cluster.vq import *
+from sklearn.preprocessing import StandardScaler
+from sklearn.svm import LinearSVC
+
 def get_path_list(root_path):
     '''
         To get a list of path directories from root path
@@ -13,6 +21,9 @@ def get_path_list(root_path):
             List containing the names of the sub-directories in the
             root directory
     '''
+    train_path_list =  os.listdir(root_path)
+    train_names = train_path_list
+    return train_names
 
 def get_class_id(root_path, train_names):
     '''
@@ -32,6 +43,15 @@ def get_class_id(root_path, train_names):
         list
             List containing all image classes id
     '''
+    train_image_list = []
+    image_classes_list = []
+    for index, class_path in enumerate(train_names):
+    #Dataset/Train/aeroplane
+        image_path_list = os.listdir(root_path + '/' + class_path)
+        for image_path in image_path_list:
+            train_image_list.append(root_path + '/' + class_path + '/' + image_path)
+            image_classes_list.append(index)
+    return train_image_list, image_classes_list
 
 def detect_faces_and_filter(image_list, image_classes_list=None):
     '''
@@ -160,7 +180,7 @@ if __name__ == "__main__":
         Modifiable
         -------------------
     '''
-    train_root_path = "[PATH_TO_TRAIN_ROOT_DIRECTORY]"
+    train_root_path = "dataset/train" #"[PATH_TO_TRAIN_ROOT_DIRECTORY]"
     '''
         -------------------
         End of modifiable
@@ -169,6 +189,8 @@ if __name__ == "__main__":
 
     train_names = get_path_list(train_root_path)
     train_image_list, image_classes_list = get_class_id(train_root_path, train_names)
+    print(train_image_list)
+    print(image_classes_list)
     train_face_grays, _, filtered_classes_list = detect_faces_and_filter(train_image_list, image_classes_list)
     recognizer = train(train_face_grays, filtered_classes_list)
 
