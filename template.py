@@ -6,6 +6,7 @@ from scipy.cluster.vq import *
 from sklearn.preprocessing import StandardScaler
 from sklearn.svm import LinearSVC
 
+
 def get_path_list(root_path):
     '''
         To get a list of path directories from root path
@@ -53,6 +54,7 @@ def get_class_id(root_path, train_names):
             image_classes_list.append(index)
     return train_image_list, image_classes_list
 
+
 def detect_faces_and_filter(image_list, image_classes_list=None):
     '''
         To detect a face from given image list and filter it if the face on
@@ -75,6 +77,8 @@ def detect_faces_and_filter(image_list, image_classes_list=None):
             List containing all filtered image classes id
     '''
 
+    
+
 def train(train_face_grays, image_classes_list):
     '''
         To create and train face recognizer object
@@ -91,6 +95,8 @@ def train(train_face_grays, image_classes_list):
         object
             Recognizer object after being trained with cropped face images
     '''
+    
+    
 
 def get_test_images_data(test_root_path):
     '''
@@ -189,8 +195,6 @@ if __name__ == "__main__":
 
     train_names = get_path_list(train_root_path)
     train_image_list, image_classes_list = get_class_id(train_root_path, train_names)
-    print(train_image_list)
-    print(image_classes_list)
     train_face_grays, _, filtered_classes_list = detect_faces_and_filter(train_image_list, image_classes_list)
     recognizer = train(train_face_grays, filtered_classes_list)
 
