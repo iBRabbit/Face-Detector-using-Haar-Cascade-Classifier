@@ -172,14 +172,13 @@ def get_test_images_data(test_root_path):
             List containing all loaded gray test images
     '''
     test_filename_list = os.listdir(test_root_path)
-    test_img_gray_list = []
+    test_img_list = []
     
     for test_filename in test_filename_list : 
         test_img = cv2.imread(f"{test_root_path}/{test_filename}")
-        test_img_gray = cv2.cvtColor(test_img, cv2.COLOR_BGR2GRAY)
-        test_img_gray_list.append(test_img_gray)
+        test_img_list.append(test_img)
         
-    return test_img_gray_list
+    return test_img_list
 
 def predict(recognizer, test_faces_gray):
     '''
@@ -200,6 +199,7 @@ def predict(recognizer, test_faces_gray):
     result_list = []
     
     for img in test_faces_gray : 
+        img = cv2.cvtColor(img, cv2.COLOR_RGB2GRAY)
         result, _ = recognizer.predict(img)
         result_list.append(result)
     
@@ -239,8 +239,7 @@ def draw_prediction_results(predict_results, test_image_list, test_faces_rects, 
         predict_result_name_list.append(train_names[result])
 
     for idx, img in enumerate(test_faces_rects) :
-        img = cv2.cvtColor(img, cv2.COLOR_GRAY2RGB)
-        cv2.putText(img, f"Predicted : {predict_result_name_list[idx]}", (15, 50), cv2.FONT_HERSHEY_SIMPLEX, 1.5, (255, 0, 0), 2)
+        cv2.putText(img, f"{predict_result_name_list[idx]}", (15, 50), cv2.FONT_HERSHEY_SIMPLEX, 2, (0, 0, 255), 5)
         result_img_list.append(img)
 
     return result_img_list
@@ -254,13 +253,15 @@ def combine_and_show_result(image_list):
             Array containing image data
     '''
     
-    plt.figure(1, (24, 24))
-    for i, image in enumerate(image_list) :
-        plt.subplot(3, 3, i + 1)
-        plt.axis('off')
-        plt.imshow(image, cmap = 'gray')
-    plt.show()
-
+    resized_img = []
+    for img in image_list :
+        tmp = cv2.resize(img, (350, 350), cv2.INTER_AREA)
+        resized_img.append(tmp)
+    
+    res = np.hstack((resized_img[0], resized_img[1], resized_img[2], resized_img[3], resized_img[4]))
+    cv2.imshow("Final Result", res)
+    cv2.waitKey(0)
+    
 '''
 You may modify the code below if it's marked between
 
